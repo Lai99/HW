@@ -2,7 +2,6 @@ import webapp2
 import jinja2
 import os
 import re
-import hw2_1
 
 template_dir = os.path.join(os.path.dirname(__file__), 'template')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
@@ -23,6 +22,17 @@ class MainHandler(BaseHandler):
     def get(self):
         self.render('main.html')
     
+class Rot13Handler(BaseHandler):
+    def get(self):
+        self.render('rot13-form.html')
+                                
+    def post(self):
+        rot13 = ''
+        text = self.request.get('text')
+        if text:
+            rot13 = text.encode('rot13')
+
+        self.render('rot13-form.html', text = rot13)  
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
