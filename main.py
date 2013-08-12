@@ -34,11 +34,53 @@ class Rot13Handler(BaseHandler):
 #            rot = text.encode('rot13')
             rot = hw2_1.rot13(text)
             rot = hw2_1.escape_html(rot)
-        self.render('rot13-form.html', text = rot)  
+        self.render('rot13-form.html', text = rot)
+
+class SignUpHandler(BaseHadler):
+    def get(self):
+        self.render('signup-form.html')
+
+    def post(self):
+        error = False
+        username = self.request.get('username')
+        password = self.request.get('password')
+        verify = self.request.get('verify')
+        email = self.request.get('email')
+
+        params = {'username':username, 'email':email}
+
+        if not hw2_2.valid_username(username):
+            params['error_username'] = "That's not a valid username."
+            error = True
+        if not hw2_2.valid_password(password):
+            params['error_password'] = "That wasn't a valid password."
+            error = True
+        elif password != verify:
+            params['error_verify'] = "Your passwords didn't match."
+            error = True
+
+        if not hw2_2.valid_email(email):
+            params['error_email'] = "That's not a valid email."
+            error = True
+            
+        if error:
+            self.render('signup-form.html', **params)
+        else:
+            self.redirect('/hw2_2/welcome?username=' + username)
+        
+class Welcome(BaseHandler):
+    def get(self):
+        username = self.request.get('username')
+        if hw2_2.valid_username(username):
+            self.render('welcome.html',username)
+        else:
+            self.redirect('/hw2_2')
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/hw2_1',Rot13Handler)
+    ('/hw2_1',Rot13Handler),
+    ('/hw2_2',SignUpHandler),
+    ('/hw2_2/welcome',Welcome)
 ], debug=True)
 
 
