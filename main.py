@@ -36,15 +36,7 @@ class Rot13Handler(BaseHandler):
             rot13 = escape_html(rot13)
         self.render('rot13-form.html', text = rot13)  
 
-class SignUpHnadler(Basehandler):
-    def get(self):
-        self.render('signup-form.html')
-
-    def post(self):
-        pass
-
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/hw2_1',Rot13Handler),
-    ('/hw2_2',SingUpHandler)
+    ('/hw2_1',Rot13Handler)
 ], debug=True)
