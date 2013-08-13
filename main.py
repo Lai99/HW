@@ -1,8 +1,8 @@
 import webapp2
 import jinja2
 import os
-import re
 import hw2_1
+import hw2_2
 
 template_dir = os.path.join(os.path.dirname(__file__), 'template')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
@@ -36,7 +36,7 @@ class Rot13Handler(BaseHandler):
             rot = hw2_1.escape_html(rot)
         self.render('rot13-form.html', text = rot)
 
-class SignUpHandler(BaseHadler):
+class SignUpHandler(BaseHandler):
     def get(self):
         self.render('signup-form.html')
 
@@ -67,12 +67,12 @@ class SignUpHandler(BaseHadler):
             self.render('signup-form.html', **params)
         else:
             self.redirect('/hw2_2/welcome?username=' + username)
-        
-class Welcome(BaseHandler):
+      
+class Welcome(BaseHandler):    
     def get(self):
         username = self.request.get('username')
         if hw2_2.valid_username(username):
-            self.render('welcome.html',username)
+            self.render('welcome.html',username = username)
         else:
             self.redirect('/hw2_2')
 
