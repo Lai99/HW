@@ -80,7 +80,10 @@ app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/hw2_1',Rot13Handler),
     ('/hw2_2',SignUpHandler),
-    ('/hw2_2/welcome',Welcome)
+    ('/hw2_2/welcome',Welcome),
+    ('/hw3',BlogFront),
+    ('/hw3/newpost',NewPost),
+    ('/hw3/([0-9]+)',PostPage),
 ], debug=True)
 
 
