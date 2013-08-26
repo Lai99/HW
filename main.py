@@ -3,10 +3,11 @@ import jinja2
 import os
 import hw2_1
 import hw2_2
+import hw3
 
 template_dir = os.path.join(os.path.dirname(__file__), 'template')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
-                               autoescape = False)
+                               autoescape = True)
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
