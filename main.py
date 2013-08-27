@@ -28,12 +28,24 @@ class MainHandler(BaseHandler):
 class BlogFrontHandler(BaseHandler):
     def get(self):
         posts = db.GqlQuery("SELECT * FROM posts ORDER BY CREATED DESC LIMIT 10")
-
+        self.render('front.html', posts = posts)
+        
 class PostPageHandler(BaseHandler):
     pass
 
 class NewPostHandler(BaseHandler):
-    pass
+    def get(self):
+        self.render('newpost.html')
+
+    def post(self):
+        subject = self.request.get('subject')
+        content = self.request.get('content')
+
+        if subject and content:
+            
+        else:
+            error = "empty!"
+            self.render('newpost.html', subject=subject, content=content, error=error)
         
 #####################        
 
