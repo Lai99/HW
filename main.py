@@ -23,7 +23,22 @@ class BaseHandler(webapp2.RequestHandler):
 class MainHandler(BaseHandler):
     def get(self):
         self.render('main.html')
-    
+#HW3
+#####################
+class BlogFrontHandler(BaseHandler):
+    def get(self):
+        posts = db.GqlQuery("SELECT * FROM posts ORDER BY CREATED DESC LIMIT 10")
+
+class PostPageHandler(BaseHandler):
+    pass
+
+class NewPostHandler(BaseHandler):
+    pass
+        
+#####################        
+
+#HW2        
+#####################    
 class Rot13Handler(BaseHandler):
     def get(self):
         self.render('rot13-form.html')
@@ -76,15 +91,16 @@ class Welcome(BaseHandler):
             self.render('welcome.html',username = username)
         else:
             self.redirect('/hw2_2')
+#####################
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/hw2_1',Rot13Handler),
     ('/hw2_2',SignUpHandler),
     ('/hw2_2/welcome',Welcome),
-    ('/hw3',BlogFront),
-    ('/hw3/newpost',NewPost),
-    ('/hw3/([0-9]+)',PostPage),
+    ('/hw3',BlogFrontHandler),
+    ('/hw3/newpost',NewPostHandler),
+    ('/hw3/([0-9]+)',PostPageHandler),
 ], debug=True)
 
 
