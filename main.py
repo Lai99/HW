@@ -42,7 +42,9 @@ class NewPostHandler(BaseHandler):
         content = self.request.get('content')
 
         if subject and content:
-            
+            p = Post(parent=hw3.blog_key(), subject=subject,content=content)
+            p.put()
+            self.redirect('/hw3/%s' % str(p.key().id())
         else:
             error = "empty!"
             self.render('newpost.html', subject=subject, content=content, error=error)
