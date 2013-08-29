@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+	<form action="/hw3/">
+		<input type="submit" value="Return">
+	</form>
+	<br>
   {{post.render() | safe}}
 {% endblock %}

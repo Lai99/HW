@@ -1,9 +1,11 @@
 import webapp2
 import jinja2
 import os
+import re
 import hw2_1
 import hw2_2
-import hw3
+
+from google.appengine.ext import db
 
 template_dir = os.path.join(os.path.dirname(__file__), 'template')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
@@ -25,30 +27,54 @@ class MainHandler(BaseHandler):
         self.render('main.html')
 #HW3
 #####################
+def blog_key(name='default'):
+    return db.Key.from_path('blogs', name)
+
+class Post(db.Model):
+    subject = db.StringProperty(required = True)
+    content = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
+
+    def render(self):
+        self._render_text = self.content.replace('\n', '<br>')
+        return render_str("post.html", p = self) 
+        
 class BlogFrontHandler(BaseHandler):
     def get(self):
-        posts = db.GqlQuery("SELECT * FROM posts ORDER BY CREATED DESC LIMIT 10")
+        posts = db.GqlQuery("SELECT * FROM Post ORDER BY created DESC LIMIT 10")
         self.render('front.html', posts = posts)
+
+    def post(self):
+        self.redirect("/hw3/newpost.html")
         
 class PostPageHandler(BaseHandler):
-    pass
+    def get(self, post_id):
+        key = db.Key.from_path('Post', int(post_id),parent=blog_key())
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+        
+        self.render('permalink.html', post = post)
 
 class NewPostHandler(BaseHandler):
     def get(self):
-        self.render('newpost.html')
+        self.render("newpost.html")
 
     def post(self):
         subject = self.request.get('subject')
         content = self.request.get('content')
 
         if subject and content:
-            p = Post(parent=hw3.blog_key(), subject=subject,content=content)
+            p = Post(parent=blog_key(), subject=subject,content=content)
             p.put()
-            self.redirect('/hw3/%s' % str(p.key().id())
+            self.redirect('/hw3/%s' % str(p.key().id()))
         else:
             error = "empty!"
-            self.render('newpost.html', subject=subject, content=content, error=error)
-        
+            self.render("newpost.html", subject=subject, content=content, error=error)
+
 #####################        
 
 #HW2        
@@ -112,7 +138,7 @@ app = webapp2.WSGIApplication([
     ('/hw2_1',Rot13Handler),
     ('/hw2_2',SignUpHandler),
     ('/hw2_2/welcome',Welcome),
-    ('/hw3',BlogFrontHandler),
+    ('/hw3/?',BlogFrontHandler),
     ('/hw3/newpost',NewPostHandler),
     ('/hw3/([0-9]+)',PostPageHandler),
 ], debug=True)

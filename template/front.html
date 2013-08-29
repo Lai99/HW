@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+	<form action="/hw3/newpost">
+		<input type="submit" value="New Post">
+	</form>
+	<br>
   {% for p in posts %}
     {{ p.render() | safe }}
     <br><br>
